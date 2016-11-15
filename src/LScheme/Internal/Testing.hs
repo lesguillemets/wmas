@@ -2,6 +2,7 @@ module LScheme.Internal.Testing
     ( pt
     , byShow
     , ByteString
+    , pack
     ) where
 
 import Text.Parsec

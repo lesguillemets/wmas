@@ -3,6 +3,7 @@
 import Test.Hspec
 import Test.QuickCheck
 import Data.Either
+import Control.Applicative (liftA)
 import LScheme
 import LScheme.Internal.Testing
 
@@ -11,6 +12,15 @@ parseSpec = do
     describe "parseString" $ do
         it "parses normal string" $
             s "\"There\"" `shouldBe` Right (String "There")
+        it "handles escaped backslash" $
+            s (byShow "\\") `shouldBe` Right (String "\\")
+        it "handles escaped quotes" $
+            s (byShow "say \"hi\"") `shouldBe` Right (String "say \"hi\"")
+        it "handles \\n" $
+            s (byShow "foo \n bar") `shouldBe` Right (String "foo \n bar")
+        it "handles random string" . property $
+            \inp -> let str = toStr inp
+                        in s (byShow str) `shouldBe` Right (String str)
 
     describe "parseAtom" $ do
         it "parses '#t'" $
@@ -33,6 +43,12 @@ parseSpec = do
         s = pt parseString
         a = pt parseAtom
         n = pt parseNumber
+
+gSS :: Gen ByteString
+gSS =  liftA pack . listOf . elements $ '\t':'\r':'\n':[' '..'~']
+newtype SchemeString = SchemeString { toStr :: ByteString } deriving Show
+instance Arbitrary SchemeString where
+    arbitrary = SchemeString <$> gSS
 
 main :: IO ()
 main = do

@@ -21,7 +21,21 @@ data SchemeVal = Atom ByteString
                | Bool Bool deriving (Show, Eq)
 
 parseString :: Parser SchemeVal
-parseString = String . pack <$> (char '"' *> many (noneOf "\"") <* char '"')
+parseString = String . pack <$> (char '"' *> many charOrEscaped <* char '"')
+
+charOrEscaped :: Parser Char
+charOrEscaped = try escaped <|> noneOf "\\\""
+escaped :: Parser Char
+escaped = do
+    -- FIXME
+    _ <- char '\\'
+    c <- oneOf "\\\"ntr"
+    return $ case c of
+                  '\\' -> c
+                  '\"' -> c
+                  'n' -> '\n'
+                  't' -> '\t'
+                  'r' -> '\r'
 
 parseAtom :: Parser SchemeVal
 parseAtom = do
@@ -35,7 +49,7 @@ parseAtom = do
 parseNumber :: Parser SchemeVal
 parseNumber = Number . read <$> many1 digit
 
-parseExpr :: Parse SchemeVal
+parseExpr :: Parser SchemeVal
 parseExpr = parseAtom
          <|> parseString
          <|> parseNumber

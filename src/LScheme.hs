@@ -31,3 +31,6 @@ parseAtom = do
                   "#t" -> Bool True
                   "#f" -> Bool False
                   atom -> Atom . pack $ atom
+
+parseNumber :: Parser SchemeVal
+parseNumber = Number . read <$> many1 digit

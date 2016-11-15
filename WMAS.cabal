@@ -16,6 +16,11 @@ cabal-version:       >=1.10
 library
   hs-source-dirs:      src
   exposed-modules:     LScheme
+                     , LScheme.SchemeVal
+                     , LScheme.Parser
+                     , LScheme.Parser.Atom
+                     , LScheme.Parser.Number
+                     , LScheme.Parser.String
                      , LScheme.Internal.Testing
   build-depends:       base >= 4.7 && < 5
                      , parsec

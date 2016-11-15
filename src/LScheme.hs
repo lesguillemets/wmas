@@ -34,3 +34,8 @@ parseAtom = do
 
 parseNumber :: Parser SchemeVal
 parseNumber = Number . read <$> many1 digit
+
+parseExpr :: Parse SchemeVal
+parseExpr = parseAtom
+         <|> parseString
+         <|> parseNumber

@@ -19,6 +19,7 @@ library
                      , LScheme.SchemeVal
                      , LScheme.Parser
                      , LScheme.Parser.Atom
+                     , LScheme.Parser.Character
                      , LScheme.Parser.Number
                      , LScheme.Parser.String
                      , LScheme.Internal.Testing

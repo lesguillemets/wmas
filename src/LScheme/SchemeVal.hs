@@ -7,4 +7,5 @@ data SchemeVal = Atom ByteString
                | DottedList [SchemeVal] SchemeVal
                | Number Integer
                | String ByteString
+               | Character Char
                | Bool Bool deriving (Show, Eq)

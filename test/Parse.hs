@@ -5,9 +5,12 @@ import Test.QuickCheck
 import Data.Either
 import Data.Monoid
 import Data.Char (intToDigit)
+import Control.Exception (evaluate)
+import Control.DeepSeq
 import Numeric
 import Control.Applicative (liftA)
 import LScheme
+import LScheme.Parser.Character
 import LScheme.Parser.Atom
 import LScheme.Parser.String
 import LScheme.Parser.Number

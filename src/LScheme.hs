@@ -22,3 +22,12 @@ data SchemeVal = Atom ByteString
 
 parseString :: Parser SchemeVal
 parseString = String . pack <$> (char '"' *> many (noneOf "\"") <* char '"')
+
+parseAtom :: Parser SchemeVal
+parseAtom = do
+    first <- letter <|> symbol
+    rest <- many (letter <|> digit <|> symbol)
+    return $ case first:rest of
+                  "#t" -> Bool True
+                  "#f" -> Bool False
+                  atom -> Atom . pack $ atom

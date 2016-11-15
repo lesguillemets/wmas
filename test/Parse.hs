@@ -3,6 +3,9 @@
 import Test.Hspec
 import Test.QuickCheck
 import Data.Either
+import Data.Monoid
+import Data.Char (intToDigit)
+import Numeric
 import Control.Applicative (liftA)
 import LScheme
 import LScheme.Internal.Testing
@@ -39,12 +42,29 @@ parseSpec = do
     describe "parseNumber" $ do
         it "parses natural number" . property $
             \x -> let (x' :: Integer) = abs x in
-                  n (byShow x') == Right (Number x')
+                  num (byShow x') == Right (Number x')
+        it "parses binary" . property $
+            \n -> let (n':: Integer) = abs n in
+                  num (pack $ "#b" <> showIntAtBase 2 intToDigit n' "")
+                      `shouldBe` Right (Number n')
+        it "parses octal" . property $
+            \n -> let (n':: Integer) = abs n in
+                  num (pack $ "#o" <> showOct n' "")
+                     `shouldBe` Right (Number n')
+        it "parses hex" . property $
+            \n -> let (n':: Integer) = abs n in
+                  num (pack $ "#x" <> showHex n' "")
+                    `shouldBe` Right (Number n')
+        it "parses decimal with #d" . property $
+            \n -> let (n':: Integer) = abs n in
+                  num (pack $ "#d" <> show n') `shouldBe` Right (Number n')
+
+
 
     where
         s = pt parseString
         a = pt parseAtom
-        n = pt parseNumber
+        num = pt parseNumber
 
 gSS :: Gen ByteString
 gSS =  liftA pack . listOf . elements $ '\t':'\r':'\n':[' '..'~']

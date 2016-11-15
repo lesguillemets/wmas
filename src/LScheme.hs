@@ -1,9 +1,12 @@
 module LScheme where
 
+import Prelude as P
 import Data.ByteString hiding (pack)
-import Data.ByteString.Char8
+import Data.ByteString.Char8 hiding (readInt)
+import Data.Monoid
 import Text.Parsec
 import Text.Parsec.ByteString
+import Numeric
 -- $setup
 -- >>> :set -XOverloadedStrings
 
@@ -46,10 +49,37 @@ parseAtom = do
                   "#f" -> Bool False
                   atom -> Atom . pack $ atom
 
+-- TODO : must come before atom
 parseNumber :: Parser SchemeVal
-parseNumber = Number . read <$> many1 digit
+parseNumber = parseBinary <|> parseOctal <|> parseHexadecimal <|> parseDecimal
+
+-- FIXME : unsafe
+getReadIntResult :: String -> [(Integer,String)] -> SchemeVal
+getReadIntResult name [] = error $ "readInt error on " <> name
+getReadIntResult _ ((n,_):_) = Number n
+
+parseBinary :: Parser SchemeVal
+parseBinary = do
+    _ <- try (string "#b")
+    getReadIntResult "binary"
+        . readInt 2 isZO (read.return) <$> many1 (oneOf "01")
+    where
+        isZO '0' = True
+        isZO '1' = True
+        isZO _ = False
+
+parseOctal = do
+    _ <- try (string "#o")
+    getReadIntResult "octal" . readOct <$> many1 octDigit
+parseHexadecimal = do
+    _ <- try (string "#x")
+    getReadIntResult "hexadecimal" . readHex <$> many1 hexDigit
+parseDecimal = do
+    _ <- try . optional $ string "#d"
+    getReadIntResult "decimal" . readDec <$> many1 hexDigit
+
 
 parseExpr :: Parser SchemeVal
-parseExpr = parseAtom
+parseExpr = parseNumber
          <|> parseString
-         <|> parseNumber
+         <|> parseAtom

@@ -65,12 +65,25 @@ parseSpec = do
             \n -> let (n':: Integer) = abs n in
                   num (pack $ "#d" <> show n') `shouldBe` Right (Number n')
 
-
-
+    describe "parseCharacter" $ do
+        it "parses #\\a" $
+            c "#\\a" `shouldBe` Right (Character 'a')
+        it "parses arbitrary character" . property $
+            \ch -> c (pack . ("#\\" <>) . return $ ch) == Right (Character ch)
+        it "parses  #\\space" $
+            c "#\\space" `shouldBe` Right (Character ' ')
+        it "parses  #\\newline" $
+            c "#\\newline" `shouldBe` Right (Character '\n')
+        it "is case-insensitive for #\\<character name> notation" $
+            let cases = allCases "space"
+                in
+                map (c . pack . ("#\\" <>)) cases
+                    `shouldSatisfy` all (== Right (Character ' '))
     where
         s = pt parseString
         a = pt parseAtom
         num = pt parseNumber
+        c = pt parseCharacter
 
 gSS :: Gen ByteString
 gSS =  liftA pack . listOf . elements $ '\t':'\r':'\n':[' '..'~']

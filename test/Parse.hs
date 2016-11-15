@@ -7,7 +7,7 @@ import Data.Monoid
 import Data.Char (intToDigit)
 import Numeric
 import Control.Applicative (liftA)
-import LScheme.SchemeVal
+import LScheme
 import LScheme.Parser.Atom
 import LScheme.Parser.String
 import LScheme.Parser.Number

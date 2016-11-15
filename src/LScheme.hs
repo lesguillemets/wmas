@@ -24,7 +24,7 @@ parseString :: Parser SchemeVal
 parseString = String . pack <$> (char '"' *> many charOrEscaped <* char '"')
 
 charOrEscaped :: Parser Char
-charOrEscaped = try escaped <|> noneOf "\\\""
+charOrEscaped = escaped <|> noneOf "\\\""
 escaped :: Parser Char
 escaped = do
     -- FIXME

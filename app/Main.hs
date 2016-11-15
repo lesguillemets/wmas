@@ -3,4 +3,4 @@ module Main where
 import LScheme
 
 main :: IO ()
-main = someFunc
+main = putStrLn "hi"

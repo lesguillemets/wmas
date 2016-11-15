@@ -13,18 +13,15 @@ parseCharacter :: Parser SchemeVal
 parseCharacter = do
     _ <- try $ string "#\\"
     body <- many1 anyChar
-    return . Character $ case map toLower body of
-                              [c] -> head body
-                              "space" -> ' '
-                              "newline" -> '\n'
-                              -- FIXME : Error handling
-                              _ -> errorHandy body
-errorHandy o = error "HI"
-
--- errorHandy :: String -> a
--- errorHandy o = error . mconcat $
---     [ "The object \""
---     , o
---     , "\", passed as an argument to name->char, "
---     , "is not in the correct range."
---     ]
+    -- TODO : return being verbose
+    Character <$> case map toLower body of
+                       [c] -> return $ head body
+                       "space" -> return ' '
+                       "newline" -> return '\n'
+                       _ -> fail $ errorHandy body -- FIXME: not showing up?
+errorHandy :: String -> String
+errorHandy o = mconcat [ "The object \""
+                       , o
+                       , "\", passed as an argument to name->char, "
+                       , "is not in the correct range."
+                       ]

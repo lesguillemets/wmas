@@ -6,7 +6,6 @@ import Data.Either
 import Data.Monoid
 import Data.Char (intToDigit)
 import Control.Exception (evaluate)
-import Control.DeepSeq
 import Numeric
 import Control.Applicative (liftA)
 import LScheme
@@ -79,9 +78,8 @@ parseSpec = do
                 in
                 map (c . pack . ("#\\" <>)) cases
                     `shouldSatisfy` all (== Right (Character ' '))
-        it "throws errors for unrecognized names (for now)" $
-            (evaluate . force) (c "#\\invalid") `shouldThrow` errorCall "HI"
---                 "The object \"invalid\", passed as an argument to name->char, is not in the correct range."
+        it "doesn't parse unrecognized names" $
+            (c "#\\invalid") `shouldSatisfy` isLeft
     where
         s = pt parseString
         a = pt parseAtom

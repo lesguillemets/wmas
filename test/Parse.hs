@@ -21,6 +21,8 @@ parseSpec = do
         it "handles random string" . property $
             \inp -> let str = toStr inp
                         in s (byShow str) `shouldBe` Right (String str)
+        it "doesn't parse invalid escape: \\g" $
+            s "\"invalid \\g\"" `shouldSatisfy` isLeft
 
     describe "parseAtom" $ do
         it "parses '#t'" $

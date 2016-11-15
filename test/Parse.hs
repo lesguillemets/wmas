@@ -79,6 +79,9 @@ parseSpec = do
                 in
                 map (c . pack . ("#\\" <>)) cases
                     `shouldSatisfy` all (== Right (Character ' '))
+        it "throws errors for unrecognized names (for now)" $
+            (evaluate . force) (c "#\\invalid") `shouldThrow` errorCall "HI"
+--                 "The object \"invalid\", passed as an argument to name->char, is not in the correct range."
     where
         s = pt parseString
         a = pt parseAtom

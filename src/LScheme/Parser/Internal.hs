@@ -22,10 +22,7 @@ parseExpr = parseAtom
          <|> parseNumber
          <|> parseFloat
          <|> parseQuoted
-         <|> (do
-                char '(' *>
-                    try parseList <|> parseDottedList
-                <* char ')')
+         <|> (char '(' *> (try parseList <|> parseDottedList) <* char ')')
 
 parseList :: Parser SchemeVal
 parseList = List <$> parseExpr `sepBy` spaces1

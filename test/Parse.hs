@@ -9,6 +9,7 @@ import Control.Exception (evaluate)
 import Numeric
 import Control.Applicative (liftA)
 import LScheme
+import LScheme.Parser.Internal
 import LScheme.Parser.Float
 import LScheme.Parser.Character
 import LScheme.Parser.Atom
@@ -89,12 +90,17 @@ parseSpec = do
 --             \x -> let (x' :: Double) = abs x in
 --                     fl (byShow x') == Right (Float x')
 --         no support for d.de2 thing
+    describe "parseExpr" $ do
+        it "parses (a test)" $
+            ex "(a test)" `shouldBe` Right (List [Atom "a",Atom "test"])
     where
         s = pt parseString
         a = pt parseAtom
         num = pt parseNumber
         c = pt parseCharacter
         fl = pt parseFloat
+        li = pt parseList
+        ex = pt parseExpr
 
 gSS :: Gen ByteString
 gSS =  liftA pack . listOf . elements $ '\t':'\r':'\n':[' '..'~']

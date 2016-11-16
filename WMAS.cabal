@@ -18,6 +18,7 @@ library
   exposed-modules:     LScheme
                      , LScheme.SchemeVal
                      , LScheme.Parser
+                     , LScheme.Parser.Internal
                      , LScheme.Parser.Atom
                      , LScheme.Parser.Character
                      , LScheme.Parser.Number

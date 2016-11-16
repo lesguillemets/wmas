@@ -104,6 +104,13 @@ parseSpec = do
                 Right (DottedList [Atom "dotted"] (Atom "list"))
 
     describe "parseExpr" $ do
+        it "parses natural number" . property $
+            \x -> let (x' :: Integer) = abs x in
+                  num (byShow x') == Right (Number x')
+        it "parses 3.3" $
+            ex "3.3" `shouldBe` Right (Float 3.3)
+        it "parses \"string\"" $
+            ex "\"string\"" `shouldBe` Right (String "string")
         it "parses (a test)" $
             ex "(a test)" `shouldBe` Right (List [Atom "a",Atom "test"])
         it "parses ( a test  )" $
@@ -118,6 +125,16 @@ parseSpec = do
             ex "(a (dotted . list) test)" `shouldBe`
                 Right (List [ Atom "a"
                             , DottedList [Atom "dotted"] (Atom "list")
+                            , Atom "test"])
+        it "parses (a '(quoted (dotted . list)) test)" $
+            ex "(a '(quoted (dotted . list)) test)" `shouldBe`
+                Right (List [ Atom "a"
+                            , List [ Atom "quote"
+                                   , List [ Atom "quoted"
+                                          , DottedList [Atom "dotted"]
+                                                       (Atom "list")
+                                          ]
+                                   ]
                             , Atom "test"])
         it "fails on (a '(imbalanced parens)" $
             ex "(a '(imbalanced parens)" `shouldSatisfy` isLeft

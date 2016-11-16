@@ -18,8 +18,8 @@ parseExpr :: Parser SchemeVal
 parseExpr = parseAtom
          <|> parseCharacter
          <|> parseString
+         <|> parseFloat -- TODO : being order-dependent
          <|> parseNumber
-         <|> parseFloat
          <|> parseQuoted
          <|> parseListLikes
 

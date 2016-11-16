@@ -5,7 +5,6 @@ module LScheme.Parser.Character
 import LScheme.SchemeVal
 import Prelude as P
 import Data.Char
-import Data.Monoid
 import Text.Parsec
 import Text.Parsec.ByteString
 

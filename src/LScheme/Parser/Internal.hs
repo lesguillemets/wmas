@@ -47,7 +47,7 @@ parseQuoted = do
 spaces1 :: Parser ()
 spaces1 = skipMany1 space
 
--- depreceated
+-- for reference
 
 parseList :: Parser SchemeVal
 parseList = List <$> parseExpr `sepBy` spaces1

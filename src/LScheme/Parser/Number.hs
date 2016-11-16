@@ -25,12 +25,15 @@ parseBinary = do
         isZO '1' = True
         isZO _ = False
 
+parseOctal :: Parser SchemeVal
 parseOctal = do
     _ <- try (string "#o")
     getReadIntResult "octal" . readOct <$> many1 octDigit
+parseHexadecimal :: Parser SchemeVal
 parseHexadecimal = do
     _ <- try (string "#x")
     getReadIntResult "hexadecimal" . readHex <$> many1 hexDigit
+parseDecimal :: Parser SchemeVal
 parseDecimal = do
     _ <- try . optional $ string "#d"
     getReadIntResult "decimal" . readDec <$> many1 hexDigit

@@ -13,4 +13,4 @@ parseFloat = do
     let digits = h <> ('.':b)
     case readFloat digits of
          [] -> parserFail $ "cannot parse " <> digits <> " as a float"
-         [(x,_)] -> return $ Float x
+         (x,_):_ -> return $ Float x

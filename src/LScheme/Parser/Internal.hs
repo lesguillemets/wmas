@@ -32,9 +32,9 @@ parseList = List <$> parseExpr `sepBy` spaces1
 
 parseDottedList :: Parser SchemeVal
 parseDottedList = do
-    head <- parseExpr `endBy` spaces1
-    tail <- char '.' *> spaces1 *> parseExpr
-    return $ DottedList head tail
+    dottedHead <- parseExpr `endBy1` spaces1
+    dottedTail <- char '.' *> spaces1 *> parseExpr
+    return $ DottedList dottedHead dottedTail
 
 parseQuoted :: Parser SchemeVal
 parseQuoted = do

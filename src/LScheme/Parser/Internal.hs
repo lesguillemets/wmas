@@ -1,8 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 module LScheme.Parser.Internal
     ( parseExpr
-    , parseList
-    , parseDottedList
+    , parseListLikes
     , parseQuoted
     ) where
 import LScheme.SchemeVal
@@ -22,7 +21,33 @@ parseExpr = parseAtom
          <|> parseNumber
          <|> parseFloat
          <|> parseQuoted
-         <|> (char '(' *> (try parseList <|> parseDottedList) <* char ')')
+         <|> parseListLikes
+
+-- parses List and DottedList.
+parseListLikes :: Parser SchemeVal
+parseListLikes = do
+    _ <- char '(' <* spaces
+    pre <- parseListsPre <* spaces
+    afterDot <- optionMaybe $ char '.' *> spaces1 *> parseExpr
+    _ <- spaces *> char ')'
+    return $ listOrDotted pre afterDot
+    where
+        listOrDotted :: [SchemeVal] -> Maybe SchemeVal -> SchemeVal
+        listOrDotted pre Nothing = List pre
+        listOrDotted l (Just d) = DottedList l d
+
+parseListsPre :: Parser [SchemeVal]
+parseListsPre = parseExpr `sepEndBy` spaces1 -- END!
+
+parseQuoted :: Parser SchemeVal
+parseQuoted = do
+    quoted <- char '\'' *> parseExpr
+    return $ List [Atom "quote", quoted]
+
+spaces1 :: Parser ()
+spaces1 = skipMany1 space
+
+-- depreceated
 
 parseList :: Parser SchemeVal
 parseList = List <$> parseExpr `sepBy` spaces1
@@ -32,11 +57,3 @@ parseDottedList = do
     dottedHead <- parseExpr `endBy1` spaces1
     dottedTail <- char '.' *> spaces1 *> parseExpr
     return $ DottedList dottedHead dottedTail
-
-parseQuoted :: Parser SchemeVal
-parseQuoted = do
-    quoted <- char '\'' *> parseExpr
-    return $ List [Atom "quote", quoted]
-
-spaces1 :: Parser ()
-spaces1 = skipMany1 space

@@ -90,9 +90,33 @@ parseSpec = do
 --             \x -> let (x' :: Double) = abs x in
 --                     fl (byShow x') == Right (Float x')
 --         no support for d.de2 thing
+    describe "parseList" $ do
+        it "simply parses what are inside ()" $
+            li "a test" `shouldBe` Right (List [Atom "a", Atom "test"])
+
+    describe "parseDottedList" $ do
+        it "parses \"a  b . c\"" $
+            dl "a  b . c" `shouldBe` Right (DottedList [Atom "a", Atom "b"]
+                                                       (Atom "c"))
+
     describe "parseExpr" $ do
         it "parses (a test)" $
             ex "(a test)" `shouldBe` Right (List [Atom "a",Atom "test"])
+        it "parses (a (nested) list)" $
+            ex "(a (nested) list))"
+                `shouldBe`
+                Right ( List [ Atom "a"
+                             , List [Atom "nested"]
+                             , Atom "list"])
+        it "parses (a (dotted . list) test)" $
+            ex "(a (dotted . list) test)" `shouldBe`
+                Right (List [ Atom "a"
+                            , DottedList [Atom "dotted"] (Atom "list")
+                            , Atom "test"])
+        it "fails on (a '(imbalanced parens)" $
+            ex "(a '(imbalanced parens)" `shouldSatisfy` isLeft
+
+
     where
         s = pt parseString
         a = pt parseAtom
@@ -100,6 +124,7 @@ parseSpec = do
         c = pt parseCharacter
         fl = pt parseFloat
         li = pt parseList
+        dl = pt parseDottedList
         ex = pt parseExpr
 
 gSS :: Gen ByteString

@@ -1,9 +1,13 @@
-module LScheme.Parser where
+module LScheme.Parser
+    (
+    parseExpr
+    ) where
 
 import LScheme.SchemeVal
 import LScheme.Parser.Atom
 import LScheme.Parser.Character
 import LScheme.Parser.Number
+import LScheme.Parser.Float
 import LScheme.Parser.String
 
 import Text.Parsec

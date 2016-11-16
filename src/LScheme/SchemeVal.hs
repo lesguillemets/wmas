@@ -1,4 +1,7 @@
-module LScheme.SchemeVal where
+module LScheme.SchemeVal
+    ( SchemeVal (..)
+    )
+    where
 
 import Data.ByteString (ByteString)
 

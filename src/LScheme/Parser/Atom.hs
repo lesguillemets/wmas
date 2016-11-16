@@ -1,4 +1,4 @@
-module LScheme.Parser.Atom (parseAtom) where
+module LScheme.Parser.Atom ( parseAtom ) where
 
 import LScheme.SchemeVal
 import Data.ByteString (ByteString)

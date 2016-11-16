@@ -1,4 +1,4 @@
-module LScheme.Parser.String where
+module LScheme.Parser.String ( parseString )where
 
 import LScheme.SchemeVal
 import Prelude as P

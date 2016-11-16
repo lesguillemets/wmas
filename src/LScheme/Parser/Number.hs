@@ -1,4 +1,4 @@
-module LScheme.Parser.Number where
+module LScheme.Parser.Number ( parseNumber ) where
 
 import LScheme.SchemeVal
 import Data.Monoid

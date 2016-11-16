@@ -9,6 +9,7 @@ import Control.Exception (evaluate)
 import Numeric
 import Control.Applicative (liftA)
 import LScheme
+import LScheme.Parser.Float
 import LScheme.Parser.Character
 import LScheme.Parser.Atom
 import LScheme.Parser.String
@@ -78,11 +79,21 @@ parseSpec = do
                     `shouldSatisfy` all (== Right (Character ' '))
         it "doesn't parse unrecognized names" $
             (c "#\\invalid") `shouldSatisfy` isLeft
+
+    describe "parseFloat" $ do
+        it "parses 14.32" $
+            fl "14.32" `shouldBe` Right (Float 14.32)
+        it "parses 14." $
+            fl "14." `shouldBe` Right (Float 14)
+        it "parses random double" . property $
+            \x -> let (x' :: Double) = abs x in
+                    fl (byShow x') == Right (Float x')
     where
         s = pt parseString
         a = pt parseAtom
         num = pt parseNumber
         c = pt parseCharacter
+        fl = pt parseFloat
 
 gSS :: Gen ByteString
 gSS =  liftA pack . listOf . elements $ '\t':'\r':'\n':[' '..'~']

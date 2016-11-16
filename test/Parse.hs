@@ -28,7 +28,7 @@ parseSpec = do
             s (byShow "foo \n bar") `shouldBe` Right (String "foo \n bar")
         it "handles random string" . property $
             \inp -> let str = toStr inp
-                        in s (byShow str) `shouldBe` Right (String str)
+                        in s (byShow str) == Right (String str)
         it "doesn't parse invalid escape: \\g" $
             s "\"invalid \\g\"" `shouldSatisfy` isLeft
 
@@ -51,18 +51,16 @@ parseSpec = do
         it "parses binary" . property $
             \n -> let (n':: Integer) = abs n in
                   num (pack $ "#b" <> showIntAtBase 2 intToDigit n' "")
-                      `shouldBe` Right (Number n')
+                      == Right (Number n')
         it "parses octal" . property $
             \n -> let (n':: Integer) = abs n in
-                  num (pack $ "#o" <> showOct n' "")
-                     `shouldBe` Right (Number n')
+                  num (pack $ "#o" <> showOct n' "") == Right (Number n')
         it "parses hex" . property $
             \n -> let (n':: Integer) = abs n in
-                  num (pack $ "#x" <> showHex n' "")
-                    `shouldBe` Right (Number n')
+                  num (pack $ "#x" <> showHex n' "") == Right (Number n')
         it "parses decimal with #d" . property $
             \n -> let (n':: Integer) = abs n in
-                  num (pack $ "#d" <> show n') `shouldBe` Right (Number n')
+                  num (pack $ "#d" <> show n') == Right (Number n')
 
     describe "parseCharacter" $ do
         it "parses #\\a" $

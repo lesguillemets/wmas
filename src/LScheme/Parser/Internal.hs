@@ -28,15 +28,18 @@ parseExpr = parseAtom
                 <* char ')')
 
 parseList :: Parser SchemeVal
-parseList = List <$> parseExpr `sepBy` spaces
+parseList = List <$> parseExpr `sepBy` spaces1
 
 parseDottedList :: Parser SchemeVal
 parseDottedList = do
-    head <- parseExpr `endBy` spaces
-    tail <- char '.' *> spaces *> parseExpr
+    head <- parseExpr `endBy` spaces1
+    tail <- char '.' *> spaces1 *> parseExpr
     return $ DottedList head tail
 
 parseQuoted :: Parser SchemeVal
 parseQuoted = do
-    quoted <- char '\\' *> parseExpr
+    quoted <- char '\'' *> parseExpr
     return $ List [Atom "quote", quoted]
+
+spaces1 :: Parser ()
+spaces1 = skipMany1 space

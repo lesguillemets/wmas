@@ -1,6 +1,10 @@
 module Main where
 
 import LScheme
+import System.IO
 
 main :: IO ()
-main = putStrLn "hi"
+main = do
+    hSetBuffering stdin LineBuffering
+    hSetBuffering stdout LineBuffering
+    app

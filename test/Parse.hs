@@ -138,6 +138,9 @@ parseSpec = do
                             , Atom "test"])
         it "fails on (a '(imbalanced parens)" $
             ex "(a '(imbalanced parens)" `shouldSatisfy` isLeft
+        -- ?
+        it "halts without error" . property $
+            \str -> ex (pack str) `shouldSatisfy` (const True)
 
 
     where

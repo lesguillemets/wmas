@@ -19,6 +19,12 @@ spec = do
             ex "3.3" `shouldBe` Right (Float 3.3)
         it "parses \"string\"" $
             ex "\"string\"" `shouldBe` Right (String "string")
+        it "parses #t" $
+            ex "#t" `shouldBe` Right (Bool True)
+        it "parses #\\a" $
+            ex "#\\a" `shouldBe` Right (Character 'a')
+        it "fails for #inv" $
+            ex "'#inv" `shouldSatisfy` isLeft
         it "parses (a test)" $
             ex "(a test)" `shouldBe` Right (List [Atom "a",Atom "test"])
         it "parses ( a test  )" $

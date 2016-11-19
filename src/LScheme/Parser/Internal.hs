@@ -15,8 +15,8 @@ import Text.Parsec
 import Text.Parsec.ByteString
 
 parseExpr :: Parser SchemeVal
-parseExpr = parseAtom
-         <|> parseCharacter
+parseExpr = parseCharacter
+         <|> parseAtom
          <|> parseString
          <|> parseFloat -- TODO : being order-dependent
          <|> parseNumber

@@ -1,28 +1,32 @@
 {-# LANGUAGE OverloadedStrings #-}
-module LScheme
-    ( module LScheme.SchemeVal
-    , module LScheme.Parser
-    , app
-    ) where
+module LScheme where
 
-import LScheme.SchemeVal
-import LScheme.Parser
-
-import Prelude hiding (getLine, putStrLn, null)
-import Text.Parsec
-import Data.ByteString hiding (pack)
-import Data.ByteString.Char8 (pack)
+import qualified Data.ByteString.Char8 as BC
+import Data.ByteString.Char8 (ByteString)
 import Data.Monoid
+import Text.Parsec hiding (spaces)
+import Text.Parsec.ByteString (Parser)
+import System.Environment
 
-app :: IO ()
-app = do
-    l <- getLine
-    if null l
-       then return ()
-       else (putStrLn . readExpr)  l >> app
+symbol :: Parser Char
+symbol = oneOf "!#$%&|*+-/:<=>?@^_~"
+
+spaces1 :: Parser ()
+spaces1 = skipMany1 space
+
+data LispVal = Atom String
+             | List [LispVal]
+             | DottedList [LispVal] LispVal
+             | Number Integer
+             | String ByteString
+             | Bool Bool deriving (Show)
 
 readExpr :: ByteString -> ByteString
-readExpr input =
-    case parse parseExpr "scheme" input of
-         Left err -> pack . show $ err
-         Right val -> showVal val
+readExpr input = case parse (spaces1 >> symbol) "lisp" input of
+                      Left err -> "No Match :" <> (BC.pack . show $ err)
+                      Right val -> "Found value"
+
+
+app = BC.putStrLn "Let's start over!"
+
+
